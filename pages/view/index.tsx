@@ -5,21 +5,16 @@ import {
   FieldTimeOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { Form, MenuProps } from 'antd'
-import { Breadcrumb, Layout, Menu } from 'antd'
+import { GaugeChart, AreaChart } from '@opd/g2plot-react'
+import { Layout, Menu } from 'antd'
 import { useState } from 'react'
 import styled from 'styled-components'
-import Grid from '../components/Grid'
-
-const Logo = styled.div`
-  height: 32px;
-  margin: 16px;
-  background: rgba(255, 255, 255, 0.3);
-`
-
-const { Header, Content, Footer, Sider } = Layout
-
+import type { MenuProps } from 'antd'
+import Image from 'next/image'
+import carView from '../../assets/img/man-driving-car-from-rear-view.jpg'
+import PieChart from './pie'
 type MenuItem = Required<MenuProps>['items'][number]
+const { Header, Content, Footer, Sider } = Layout
 
 function getItem(
   label: React.ReactNode,
@@ -49,7 +44,13 @@ const items: MenuItem[] = [
   getItem('Source', '9', <UserOutlined />),
 ]
 
-const Home: NextPage = () => {
+const Logo = styled.div`
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.3);
+`
+
+const View: NextPage = () => {
   const [collapsed, setCollapsed] = useState(false)
 
   return (
@@ -68,9 +69,6 @@ const Home: NextPage = () => {
             items={items}
           />
         </Sider>
-        <Form>
-
-        </Form>
         <Layout className="site-layout">
           <Header
             className="site-layout-background"
@@ -88,7 +86,21 @@ const Home: NextPage = () => {
               className="site-layout-background"
               style={{ padding: 24, height: '80vh' }}
             >
-              <Grid />
+              <div style={{ display: 'flex' }}>
+                <Image
+                  src={carView}
+                  alt="car"
+                  style={{
+                    backgroundPosition: 'center',
+                    backgroundSize: 'contain',
+                    backgroundRepeat: 'no-repeat',
+                  }}
+                />
+                <div>
+                  <PieChart />
+                  <GaugeChart percent={0.75}></GaugeChart>
+                </div>
+              </div>
             </div>
           </Content>
           <Footer style={{ textAlign: 'center', padding: '0 0 12px' }}>
@@ -100,4 +112,4 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export default View
