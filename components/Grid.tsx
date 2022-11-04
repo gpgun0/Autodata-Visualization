@@ -2,6 +2,8 @@ import { Col, Row, Slider } from 'antd'
 import { useState } from 'react'
 import Image from 'next/image'
 import carView from '../assets/img/man-driving-car-from-rear-view.jpg'
+import carView2 from '../assets/img/360_F_309129539_Zy0wYLy0YEUGcuW1OZKaoCwf6WMQQs2q.jpeg'
+import carView3 from '../assets/img/inside-car-view-11826599.jpeg'
 
 import { InboxOutlined } from '@ant-design/icons'
 import type { UploadProps } from 'antd'
@@ -10,28 +12,6 @@ import React from 'react'
 
 const { Dragger } = Upload
 
-const props: UploadProps = {
-  name: 'file',
-  multiple: true,
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-  onChange(info) {
-    const { status } = info.file
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList)
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`)
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`)
-    }
-  },
-  onDrop(e) {
-    console.log('Dropped files', e.dataTransfer.files)
-  },
-}
-
-const gutters: Record<string, number> = {}
-const vgutters: Record<string, number> = {}
 const colCounts: Record<string, number> = {}
 const rowCounts: Record<string, number> = {}
 
@@ -53,55 +33,32 @@ const content = (
 
 const Grid: React.FC = () => {
   const [colCountKey, setColCountKey] = useState(1)
-  const [rowCountKey, setRowCountKey] = useState(1)
+  const [state, setState] = useState(0)
+
+  const props: UploadProps = {
+    name: 'file',
+    multiple: true,
+
+    onChange(info) {
+      const { status } = info.file
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList)
+      }
+      if (status === 'done') {
+        setState(state + 1)
+        message.success(`${info.file.name} file uploaded successfully.`)
+      } else if (status === 'error') {
+        message.error(`${info.file.name} file upload failed.`)
+      }
+    },
+    onDrop(e) {
+      console.log('Dropped files', e.dataTransfer.files)
+    },
+  }
 
   const cols = []
   const colCount = colCounts[colCountKey]
   const rows = []
-  const rowCount = rowCounts[rowCountKey]
-
-  const imgList = [
-    {
-      id: '117',
-      author: 'Daniel Ebersole',
-      width: 1544,
-      height: 1024,
-      url: 'https://unsplash.com/photos/Q14J2k8VE3U',
-      download_url: 'https://picsum.photos/id/117/1544/1024',
-    },
-    {
-      id: '118',
-      author: 'Rick Waalders',
-      width: 1500,
-      height: 1000,
-      url: 'https://unsplash.com/photos/d-Cr8MEW5Uc',
-      download_url: 'https://picsum.photos/id/118/1500/1000',
-    },
-    {
-      id: '119',
-      author: 'Nadir Balcikli',
-      width: 3264,
-      height: 2176,
-      url: 'https://unsplash.com/photos/wE9nUW7tMmk',
-      download_url: 'https://picsum.photos/id/119/3264/2176',
-    },
-    {
-      id: '12',
-      author: 'Paul Jarvis',
-      width: 2500,
-      height: 1667,
-      url: 'https://unsplash.com/photos/I_9ILwtsl_k',
-      download_url: 'https://picsum.photos/id/12/2500/1667',
-    },
-    {
-      id: '120',
-      author: 'Guillaume',
-      width: 4928,
-      height: 3264,
-      url: 'https://unsplash.com/photos/_DA3D5P71qs',
-      download_url: 'https://picsum.photos/id/120/4928/3264',
-    },
-  ]
 
   for (let j = 0; j < colCount; j++) {
     cols.splice(0, cols.length)
@@ -129,7 +86,7 @@ const Grid: React.FC = () => {
               }}
             >
               <Image
-                src={carView}
+                src={state === 0 ? carView : state === 1 ? carView2 : carView3}
                 alt="car"
                 style={{
                   backgroundPosition: 'center',
@@ -147,10 +104,15 @@ const Grid: React.FC = () => {
 
   return (
     <>
-      <span>n X n</span>
-      <div style={{ width: '50%', marginBottom: 48 }}>
+      <span>
+        {colCountKey + 1} X {colCountKey + 1}
+      </span>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Slider
           min={0}
+          style={{
+            width: '488px',
+          }}
           max={Object.keys(colCounts).length - 1}
           value={colCountKey}
           onChange={setColCountKey}
@@ -158,16 +120,18 @@ const Grid: React.FC = () => {
           step={null}
           tooltip={{ formatter: value => value && colCounts[value] }}
         />
-        <Dragger {...props}>
+        <Dragger
+          {...props}
+          style={{
+            width: '256px',
+            height: '256px',
+          }}
+        >
           <p className="ant-upload-drag-icon">
             <InboxOutlined />
           </p>
           <p className="ant-upload-text">
             Click or drag file to this area to upload
-          </p>
-          <p className="ant-upload-hint">
-            Support for a single or bulk upload. Strictly prohibit from
-            uploading company data or other band files
           </p>
         </Dragger>
       </div>

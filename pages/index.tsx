@@ -10,6 +10,7 @@ import { Breadcrumb, Layout, Menu } from 'antd'
 import { useState } from 'react'
 import styled from 'styled-components'
 import Grid from '../components/Grid'
+import Link from 'next/link'
 
 const Logo = styled.div`
   height: 32px;
@@ -47,6 +48,7 @@ const items: MenuItem[] = [
     getItem('Frame Rate', '8'),
   ]),
   getItem('Source', '9', <UserOutlined />),
+  getItem(<Link href="/view">View</Link>, '10', <UserOutlined />),
 ]
 
 const Home: NextPage = () => {
@@ -68,9 +70,7 @@ const Home: NextPage = () => {
             items={items}
           />
         </Sider>
-        <Form>
-
-        </Form>
+        <Form></Form>
         <Layout className="site-layout">
           <Header
             className="site-layout-background"
